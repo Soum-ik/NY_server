@@ -23,6 +23,7 @@ async function run() {
     console.log("DB Connected!");
     const heroCollection = client.db("Infofarjax").collection("heroData");
     const exploreCollection = client.db("Infofarjax").collection("exploreData");
+    const choosepathCollection = client.db("Infofarjax").collection("choosepathData");
 
     app.get("/hero", async (req, res) => {
       const hero = await heroCollection.find().toArray();
@@ -32,6 +33,11 @@ async function run() {
     app.get("/explore", async (req, res) => {
       const explore = await exploreCollection.find().toArray();
       res.send(explore);
+    });
+
+    app.get("/choosepath", async (req, res) => {
+      const choosepath = await choosepathCollection.find().toArray();
+      res.send(choosepath);
     });
   } finally {
   }
