@@ -23,6 +23,9 @@ async function run() {
     console.log("DB Connected!");
     const heroCollection = client.db("Infofarjax").collection("heroData");
     const exploreCollection = client.db("Infofarjax").collection("exploreData");
+    const motivationCollection = client
+      .db("Infofarjax")
+      .collection("motivationData");
     const upComeingCourseCollection = client
       .db("Infofarjax")
       .collection("upCommingData");
@@ -47,6 +50,10 @@ async function run() {
 
     app.get("/course/upcommingTime", async (req, res) => {
       const choosepath = await upComeingCourseCollection.find().toArray();
+      res.send(choosepath);
+    });
+    app.get("/aboutus/motivation", async (req, res) => {
+      const choosepath = await motivationCollection.find().toArray();
       res.send(choosepath);
     });
   } finally {
