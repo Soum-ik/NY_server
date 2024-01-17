@@ -152,13 +152,25 @@ async function run() {
       res.send(result);
       console.log(result);
     });
-    app.get("/choose/course/:id", async (req, res) => {
+    app.get("/choose/course/get/:id", async (req, res) => {
       const id = req.params.id;
 
       const query = { _id: new ObjectId(id) };
       const result = await choosepathCollection.findOne(query);
-      console.log(query);
+      // console.log(query);
       res.send(result);
+      console.log(result);
+    });
+    app.put("/choose/course/update/:id", async (req, res) => {
+      const ID = req.params.id;
+      console.log(ID);
+      let result = choosepathCollection.updateOne(
+        { _id: new ObjectId(ID) },
+        {
+          $set: req.body,
+        }
+      );
+      res.send({ status: "Successfully" });
       console.log(result);
     });
   } finally {
