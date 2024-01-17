@@ -152,8 +152,16 @@ async function run() {
       res.send(result);
       console.log(result);
     });
+    app.get("/choose/course/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const query = { _id: new ObjectId(id) };
+      const result = await choosepathCollection.findOne(query);
+      console.log(query);
+      res.send(result);
+      console.log(result);
+    });
   } finally {
-    
   }
 }
 
