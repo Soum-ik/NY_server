@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,6 +23,10 @@ async function run() {
     console.log("DB Connected!");
     const heroCollection = client.db("Infofarjax").collection("heroData");
     const exploreCollection = client.db("Infofarjax").collection("exploreData");
+    const ceoCollection = client.db("Infofarjax").collection("CEO");
+    const AboutCourseCollection = client
+      .db("Infofarjax")
+      .collection("AboutCourseData");
     const motivationCollection = client
       .db("Infofarjax")
       .collection("motivationData");
@@ -55,6 +59,71 @@ async function run() {
     app.get("/aboutus/motivation", async (req, res) => {
       const choosepath = await motivationCollection.find().toArray();
       res.send(choosepath);
+    });
+    app.get("/aboutus/ceo", async (req, res) => {
+      const ceo = await ceoCollection.find().toArray();
+      res.send(ceo);
+    });
+    app.get("/courses/about_c", async (req, res) => {
+      const ceo = await AboutCourseCollection.find().toArray();
+      res.send(ceo);
+    });
+
+    // put method
+    app.put("/hero/:ID", async (req, res) => {
+      const ID = req.params.ID;
+      console.log(req.body, ID);
+      let result = heroCollection.updateOne(
+        {
+          _id: new ObjectId(ID),
+        },
+        {
+          $set: req.body,
+        }
+      );
+      res.send({ status: "Successfully" });
+      console.log(result);
+    });
+    app.put("/course-offer/:ID", async (req, res) => {
+      const ID = req.params.ID;
+      console.log(req.body, ID);
+      let result = exploreCollection.updateOne(
+        {
+          _id: new ObjectId(ID),
+        },
+        {
+          $set: req.body,
+        }
+      );
+      res.send({ status: "Successfully" });
+      console.log(result);
+    });
+    app.put("/motivation/:ID", async (req, res) => {
+      const ID = req.params.ID;
+      console.log(req.body, ID);
+      let result = motivationCollection.updateOne(
+        {
+          _id: new ObjectId(ID),
+        },
+        {
+          $set: req.body,
+        }
+      );
+      res.send({ status: "Successfully" });
+      console.log(result);
+    });
+
+    app.put("/courses/about_c/:ID", async (req, res) => {
+      const ID = req.params.ID;
+      console.log(ID);
+      let result = AboutCourseCollection.updateOne(
+        { _id: new ObjectId(ID) },
+        {
+          $set: req.body,
+        }
+      );
+      res.send({ status: "Successfully" });
+      console.log(result);
     });
   } finally {
   }
