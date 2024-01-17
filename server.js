@@ -137,7 +137,23 @@ async function run() {
       res.send({ status: "Successfully" });
       console.log(result);
     });
+
+    // delete courses
+    app.delete("/choose/course/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await choosepathCollection.deleteOne(query);
+      res.send(result);
+      console.log(result);
+    });
+    app.post("/choose/course/", async (req, res) => {
+      const course = req.body;
+      const result = await choosepathCollection.insertOne(course);
+      res.send(result);
+      console.log(result);
+    });
   } finally {
+    
   }
 }
 
