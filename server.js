@@ -65,8 +65,8 @@ async function run() {
       res.send(ceo);
     });
     app.get("/courses/about_c", async (req, res) => {
-      const ceo = await AboutCourseCollection.find().toArray();
-      res.send(ceo);
+      const about_c = await AboutCourseCollection.find().toArray();
+      res.send(about_c);
     });
 
     // put method
@@ -117,6 +117,18 @@ async function run() {
       const ID = req.params.ID;
       console.log(ID);
       let result = AboutCourseCollection.updateOne(
+        { _id: new ObjectId(ID) },
+        {
+          $set: req.body,
+        }
+      );
+      res.send({ status: "Successfully" });
+      console.log(result);
+    });
+    app.put("/CeoDesh/:ID", async (req, res) => {
+      const ID = req.params.ID;
+      console.log(ID);
+      let result = ceoCollection.updateOne(
         { _id: new ObjectId(ID) },
         {
           $set: req.body,
