@@ -24,6 +24,7 @@ async function run() {
     const heroCollection = client.db("Infofarjax").collection("heroData");
     const exploreCollection = client.db("Infofarjax").collection("exploreData");
     const ceoCollection = client.db("Infofarjax").collection("CEO");
+    const socialCollection = client.db("Infofarjax").collection("socialData");
     const AboutCourseCollection = client
       .db("Infofarjax")
       .collection("AboutCourseData");
@@ -67,6 +68,81 @@ async function run() {
     app.get("/courses/about_c", async (req, res) => {
       const about_c = await AboutCourseCollection.find().toArray();
       res.send(about_c);
+    });
+    app.get("/social/links", async (req, res) => {
+      const links = await socialCollection.find().toArray();
+      res.send(links);
+    });
+
+    // Function to handle both single and batch updates
+    async function handleUpdates(userId, updateFields) {
+      try {
+        // Check if updateFields is an object with at least one key
+        if (
+          typeof updateFields === "object" &&
+          Object.keys(updateFields).length > 0
+        ) {
+          // Construct the dynamic update query for batch update
+          const query = { _id: new ObjectId(userId) };
+          const updateDocument = {
+            $set: updateFields,
+          };
+
+          // Update the document
+          const result = await socialCollection.updateOne(
+            query,
+            updateDocument
+          );
+
+          if (result.modifiedCount === 1) {
+            return { success: true, message: "Document updated successfully" };
+          } else {
+            return {
+              success: false,
+              message: "Document not found or not updated",
+            };
+          }
+        } else {
+          // Handle single-field update logic here
+          const socialMediaField = new Object.keys(updateFields)[0];
+          const newValue = updateFields[socialMediaField];
+
+          // Construct the dynamic update query for single-field update
+          const query = { _id: new ObjectId(userId) };
+          const updateDocument = {
+            $set: {
+              [socialMediaField]: newValue,
+            },
+          };
+
+          // Update the document
+          const result = await socialCollection.updateOne(
+            query,
+            updateDocument
+          );
+
+          if (result.modifiedCount === 1) {
+            return { success: true, message: "Document updated successfully" };
+          } else {
+            return {
+              success: false,
+              message: "Document not found or not updated",
+            };
+          }
+        }
+      } catch (error) {
+        console.error("Error updating document:", error);
+        return { success: false, message: "Internal server error" };
+      }
+    }
+
+    app.put("/social/links/:id", async (req, res) => {
+      const userId = req.params.id;
+      const updateFields = req.body;
+
+      const result = await handleUpdates(userId, updateFields);
+
+      res.send(result);
     });
 
     // put method
