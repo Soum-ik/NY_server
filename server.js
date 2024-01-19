@@ -72,6 +72,7 @@ async function run() {
     app.get("/social/links", async (req, res) => {
       const links = await socialCollection.find().toArray();
       res.send(links);
+      console.log(links);
     });
 
     // put method
