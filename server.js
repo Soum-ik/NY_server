@@ -25,6 +25,7 @@ async function run() {
     const exploreCollection = client.db("Infofarjax").collection("exploreData");
     const ceoCollection = client.db("Infofarjax").collection("CEO");
     const socialCollection = client.db("Infofarjax").collection("socialData");
+    const bannerCollection = client.db("Infofarjax").collection("bannerData");
     const AboutCourseCollection = client
       .db("Infofarjax")
       .collection("AboutCourseData");
@@ -74,8 +75,26 @@ async function run() {
       res.send(links);
       console.log(links);
     });
-
+    app.get("/about/banner", async (req, res) => {
+      const banner = await bannerCollection.find().toArray();
+      res.send(banner);
+      console.log(banner);
+    });
     // put method
+    app.put("/about/banner/:id", async (req, res) => {
+      const id = req.params.id;
+      let result = bannerCollection.updateOne(
+        {
+          _id: new ObjectId(id),
+        },
+        {
+          $set: req.body,
+        }
+      );
+      res.send(result);
+      console.log(result, req.body);
+    });
+
     app.put("/social/links/:ID", async (req, res) => {
       const ID = req.params.ID;
       const { facebook, instagram, twitter, youtube, linkedin, telegram } =
