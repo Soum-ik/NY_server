@@ -26,6 +26,7 @@ async function run() {
     const ceoCollection = client.db("Infofarjax").collection("CEO");
     const socialCollection = client.db("Infofarjax").collection("socialData");
     const bannerCollection = client.db("Infofarjax").collection("bannerData");
+    const reviewCollection = client.db("Infofarjax").collection("reviewData");
     const AboutCourseCollection = client
       .db("Infofarjax")
       .collection("AboutCourseData");
@@ -39,6 +40,8 @@ async function run() {
       .db("Infofarjax")
       .collection("choosepathData");
 
+
+      //  all of get request from mongodb database
     app.get("/hero", async (req, res) => {
       const hero = await heroCollection.find().toArray();
       res.send(hero);
@@ -80,7 +83,14 @@ async function run() {
       res.send(banner);
       console.log(banner);
     });
-    // put method
+
+    app.get("/customer/review", async (req, res) => {
+      const review = await reviewCollection.find().toArray();
+      res.send(review);
+      console.log(review);
+    });
+
+    // all of put request from mongodb database
     app.put("/about/banner/:id", async (req, res) => {
       const id = req.params.id;
       let result = bannerCollection.updateOne(
@@ -193,7 +203,7 @@ async function run() {
       console.log(result);
     });
 
-    // delete courses
+    // all of delete request from mongodb database
     app.delete("/choose/course/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -201,9 +211,17 @@ async function run() {
       res.send(result);
       console.log(result);
     });
+
+    // all of post request from mongodb database
     app.post("/choose/course/", async (req, res) => {
       const course = req.body;
       const result = await choosepathCollection.insertOne(course);
+      res.send(result);
+      console.log(result);
+    });
+    app.post("/customer/review", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
       res.send(result);
       console.log(result);
     });
