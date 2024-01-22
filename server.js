@@ -27,9 +27,9 @@ async function run() {
     const socialCollection = client.db("Infofarjax").collection("socialData");
     const bannerCollection = client.db("Infofarjax").collection("bannerData");
     const reviewCollection = client.db("Infofarjax").collection("reviewData");
-    const AboutCourseCollection = client
+    const catagoriCollection = client
       .db("Infofarjax")
-      .collection("AboutCourseData");
+      .collection("catagoriData");
     const motivationCollection = client
       .db("Infofarjax")
       .collection("motivationData");
@@ -57,12 +57,12 @@ async function run() {
     });
 
     app.get("/course/upcommingTime", async (req, res) => {
-      const choosepath = await upComeingCourseCollection.find().toArray();
-      res.send(choosepath);
+      const upCommingData = await upComeingCourseCollection.find().toArray();
+      res.send(upCommingData);
     });
     app.get("/aboutus/motivation", async (req, res) => {
-      const choosepath = await motivationCollection.find().toArray();
-      res.send(choosepath);
+      const motivation = await motivationCollection.find().toArray();
+      res.send(motivation);
     });
     app.get("/aboutus/ceo", async (req, res) => {
       const ceo = await ceoCollection.find().toArray();
@@ -75,6 +75,12 @@ async function run() {
     });
     app.get("/about/banner", async (req, res) => {
       const banner = await bannerCollection.find().toArray();
+      res.send(banner);
+      console.log(banner);
+    });
+    // get catagoris collection
+    app.get("/catagori", async (req, res) => {
+      const banner = await catagoriCollection.find().toArray();
       res.send(banner);
       console.log(banner);
     });
@@ -204,11 +210,27 @@ async function run() {
       res.send(result);
       console.log(result);
     });
+    // TO delete catagoris
+    app.delete("/catagori/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await catagoriCollection.deleteOne(query);
+      res.send(result);
+      console.log(result);
+    });
 
     // all of post request from mongodb database
     app.post("/choose/course/", async (req, res) => {
       const course = req.body;
       const result = await choosepathCollection.insertOne(course);
+      res.send(result);
+      console.log(result);
+    });
+    // to create new catagoris
+    app.post("/catagori", async (req, res) => {
+      const catagori = req.body;
+      console.log(catagori);
+      const result = await catagoriCollection.insertOne(catagori);
       res.send(result);
       console.log(result);
     });
@@ -227,6 +249,17 @@ async function run() {
       res.send(result);
       console.log(result);
     });
+
+    // filter courses useing seletedOptions
+    app.get("/choose/course/:selectedOption", async (req, res) => {
+      const select = req.params.selectedOption;
+      const query = { selectedOption: select };
+      console.log(query);
+      const result = await choosepathCollection.find(query).toArray();
+      res.send(result);
+      console.log(result.length);
+    });
+
     app.put("/choose/course/update/:id", async (req, res) => {
       const ID = req.params.id;
       console.log(ID);
