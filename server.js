@@ -40,8 +40,7 @@ async function run() {
       .db("Infofarjax")
       .collection("choosepathData");
 
-
-      //  all of get request from mongodb database
+    //  all of get request from mongodb database
     app.get("/hero", async (req, res) => {
       const hero = await heroCollection.find().toArray();
       res.send(hero);
@@ -86,6 +85,16 @@ async function run() {
 
     app.get("/customer/review", async (req, res) => {
       const review = await reviewCollection.find().toArray();
+      res.send(review);
+      console.log(review);
+    });
+
+    app.get("/choosepath/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id),
+      };
+      const review = await choosepathCollection.find(query).toArray();
       res.send(review);
       console.log(review);
     });
