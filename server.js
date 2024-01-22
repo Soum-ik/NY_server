@@ -68,10 +68,6 @@ async function run() {
       const ceo = await ceoCollection.find().toArray();
       res.send(ceo);
     });
-    app.get("/courses/about_c", async (req, res) => {
-      const about_c = await AboutCourseCollection.find().toArray();
-      res.send(about_c);
-    });
     app.get("/social/links", async (req, res) => {
       const links = await socialCollection.find().toArray();
       res.send(links);
@@ -187,18 +183,6 @@ async function run() {
       console.log(result);
     });
 
-    app.put("/courses/about_c/:ID", async (req, res) => {
-      const ID = req.params.ID;
-      console.log(ID);
-      let result = AboutCourseCollection.updateOne(
-        { _id: new ObjectId(ID) },
-        {
-          $set: req.body,
-        }
-      );
-      res.send({ status: "Successfully" });
-      console.log(result);
-    });
     app.put("/CeoDesh/:ID", async (req, res) => {
       const ID = req.params.ID;
       console.log(ID);
