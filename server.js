@@ -13,20 +13,21 @@ const uri =
   "mongodb+srv://infofarjax:y7ySv3LfkCWXXWUh@farjaxapps.he8z4hi.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
 
 async function run() {
   try {
     client.connect();
-    console.log("DB Connected!");
+    // console.log("DB Connected!");
     const heroCollection = client.db("Infofarjax").collection("heroData");
     const exploreCollection = client.db("Infofarjax").collection("exploreData");
     const ceoCollection = client.db("Infofarjax").collection("CEO");
     const socialCollection = client.db("Infofarjax").collection("socialData");
     const bannerCollection = client.db("Infofarjax").collection("bannerData");
     const reviewCollection = client.db("Infofarjax").collection("reviewData");
+    const ImageCollection = client.db("Infofarjax").collection("Images");
     const catagoriCollection = client
       .db("Infofarjax")
       .collection("catagoriData");
@@ -71,24 +72,51 @@ async function run() {
     app.get("/social/links", async (req, res) => {
       const links = await socialCollection.find().toArray();
       res.send(links);
-      console.log(links);
+      // console.log(links);
     });
     app.get("/about/banner", async (req, res) => {
       const banner = await bannerCollection.find().toArray();
       res.send(banner);
-      console.log(banner);
+      // console.log(banner);
     });
     // get catagoris collection
     app.get("/catagori", async (req, res) => {
       const banner = await catagoriCollection.find().toArray();
       res.send(banner);
-      console.log(banner);
+      // console.log(banner);
     });
 
     app.get("/customer/review", async (req, res) => {
       const review = await reviewCollection.find().toArray();
       res.send(review);
-      console.log(review);
+      // console.log(review);
+    });
+    app.get("/images", async (req, res) => {
+      const image = await ImageCollection.find().toArray();
+      res.send(image);
+      // console.log(image);
+    });
+    app.put("/images/:ID", async (req, res) => {
+      const ID = req.params.ID;
+      const { image } = req.body;
+      console.log(ID, image);
+
+      try {
+        const result = await ImageCollection.updateOne(
+          {
+            _id: new ObjectId(ID),
+          },
+          {
+            $set: { image: image },
+          }
+        );
+
+        console.log(result);
+        res.send({ result });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
     });
 
     app.get("/choosepath/:id", async (req, res) => {
@@ -98,7 +126,7 @@ async function run() {
       };
       const review = await choosepathCollection.find(query).toArray();
       res.send(review);
-      console.log(review);
+      // console.log(review);
     });
 
     // all of put request from mongodb database
@@ -113,7 +141,7 @@ async function run() {
         }
       );
       res.send(result);
-      console.log(result, req.body);
+      // console.log(result, req.body);
     });
 
     app.put("/social/links/:ID", async (req, res) => {
@@ -137,7 +165,7 @@ async function run() {
             },
           }
         );
-        console.log(result);
+        // console.log(result);
         res.send({ status: "Successfully" });
       } catch (error) {
         console.error("Error updating document:", error);
@@ -148,7 +176,7 @@ async function run() {
     // put method
     app.put("/hero/:ID", async (req, res) => {
       const ID = req.params.ID;
-      console.log(req.body, ID);
+      // console.log(req.body, ID);
       let result = heroCollection.updateOne(
         {
           _id: new ObjectId(ID),
@@ -158,11 +186,11 @@ async function run() {
         }
       );
       res.send({ status: "Successfully" });
-      console.log(result);
+      // console.log(result);
     });
     app.put("/course-offer/:ID", async (req, res) => {
       const ID = req.params.ID;
-      console.log(req.body, ID);
+      // console.log(req.body, ID);
       let result = exploreCollection.updateOne(
         {
           _id: new ObjectId(ID),
@@ -172,11 +200,11 @@ async function run() {
         }
       );
       res.send({ status: "Successfully" });
-      console.log(result);
+      // console.log(result);
     });
     app.put("/motivation/:ID", async (req, res) => {
       const ID = req.params.ID;
-      console.log(req.body, ID);
+      // console.log(req.body, ID);
       let result = motivationCollection.updateOne(
         {
           _id: new ObjectId(ID),
@@ -186,12 +214,12 @@ async function run() {
         }
       );
       res.send({ status: "Successfully" });
-      console.log(result);
+      // console.log(result);
     });
 
     app.put("/CeoDesh/:ID", async (req, res) => {
       const ID = req.params.ID;
-      console.log(ID);
+      // console.log(ID);
       let result = ceoCollection.updateOne(
         { _id: new ObjectId(ID) },
         {
@@ -199,7 +227,7 @@ async function run() {
         }
       );
       res.send({ status: "Successfully" });
-      console.log(result);
+      // console.log(result);
     });
 
     // all of delete request from mongodb database
@@ -208,7 +236,7 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await choosepathCollection.deleteOne(query);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
     // TO delete catagoris
     app.delete("/catagori/:id", async (req, res) => {
@@ -216,14 +244,14 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await catagoriCollection.deleteOne(query);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
     app.delete("/customer-review/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await reviewCollection.deleteOne(query);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
 
     // all of post request from mongodb database
@@ -231,45 +259,45 @@ async function run() {
       const course = req.body;
       const result = await choosepathCollection.insertOne(course);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
     // to create new catagoris
     app.post("/catagori", async (req, res) => {
       const catagori = req.body;
-      console.log(catagori);
+      // console.log(catagori);
       const result = await catagoriCollection.insertOne(catagori);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
     app.post("/customer/review", async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
     app.get("/choose/course/get/:id", async (req, res) => {
       const id = req.params.id;
 
       const query = { _id: new ObjectId(id) };
       const result = await choosepathCollection.findOne(query);
-      // console.log(query);
+      console.log(query);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
 
     // filter courses useing seletedOptions
     app.get("/choose/course/:selectedOption", async (req, res) => {
       const select = req.params.selectedOption;
       const query = { selectedOption: select };
-      console.log(query);
+      // console.log(query);
       const result = await choosepathCollection.find(query).toArray();
       res.send(result);
-      console.log(result.length);
+      // console.log(result.length);
     });
 
     app.put("/choose/course/update/:id", async (req, res) => {
       const ID = req.params.id;
-      console.log(ID);
+      // console.log(ID);
       let result = choosepathCollection.updateOne(
         { _id: new ObjectId(ID) },
         {
@@ -277,7 +305,7 @@ async function run() {
         }
       );
       res.send({ status: "Successfully" });
-      console.log(result);
+      // console.log(result);
     });
   } finally {
   }
@@ -290,5 +318,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("Listening to port:", port);
+  // console.log("Listening to port:", port);
 });
