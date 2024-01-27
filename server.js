@@ -297,15 +297,15 @@ async function run() {
 
     app.put("/choose/course/update/:id", async (req, res) => {
       const ID = req.params.id;
-      // console.log(ID);
+      console.log(ID);
       let result = choosepathCollection.updateOne(
         { _id: new ObjectId(ID) },
         {
           $set: req.body,
         }
       );
-      res.send({ status: "Successfully" });
-      // console.log(result);
+      console.log({ result }, req.body);
+      res.send({ status: result });
     });
   } finally {
   }
@@ -318,5 +318,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  // console.log("Listening to port:", port);
+  console.log("Listening to port:", port);
 });
