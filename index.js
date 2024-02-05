@@ -98,7 +98,7 @@ async function run() {
     });
     app.put("/images/:ID", async (req, res) => {
       const ID = req.params.ID;
-      const { image } = req.body;
+      // const { image } = req.body;
       console.log(ID, image);
 
       try {
@@ -107,7 +107,7 @@ async function run() {
             _id: new ObjectId(ID),
           },
           {
-            $set: { image: image },
+            $set: req.body,
           }
         );
 
