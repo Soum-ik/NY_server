@@ -176,7 +176,6 @@ async function run() {
     // put method
     app.put("/hero/:ID", async (req, res) => {
       const ID = req.params.ID;
-      // console.log(req.body, ID);
       let result = heroCollection.updateOne(
         {
           _id: new ObjectId(ID),
@@ -185,7 +184,7 @@ async function run() {
           $set: req.body,
         }
       );
-      res.send({ status: "Successfully" });
+      res.send({ status: "Successfully", result });
       // console.log(result);
     });
     app.put("/course-offer/:ID", async (req, res) => {
