@@ -294,6 +294,19 @@ async function run() {
       // console.log(result.length);
     });
 
+    app.put("/customer/review/:id", async (req, res) => {
+      const ID = req.params.id;
+      console.log(ID);
+      let result = reviewCollection.updateOne(
+        { _id: new ObjectId(ID) },
+        {
+          $set: req.body,
+        }
+      );
+      console.log({ result }, req.body);
+      res.send({ status: result });
+    });
+
     app.put("/choose/course/update/:id", async (req, res) => {
       const ID = req.params.id;
       console.log(ID);
