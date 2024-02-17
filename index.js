@@ -244,7 +244,14 @@ async function run() {
       res.send(result);
       // console.log(result);
     });
+    app.delete("/application/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await ApplicationFormCollection.deleteOne(query);
+      res.send({ status: "succes", result });
+    });
     // TO delete catagoris
+
     app.delete("/catagori/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
