@@ -274,6 +274,11 @@ async function run() {
       res.send(result);
       // console.log(result);
     });
+    app.post("/application/post", async (req, res) => {
+      const request = req.body;
+      const result = await ApplicationFormCollection.insertOne(request);
+      res.send({status: "succes", result});
+    });
     // to create new catagoris
     app.post("/catagori", async (req, res) => {
       const catagori = req.body;
