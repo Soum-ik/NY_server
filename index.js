@@ -28,6 +28,9 @@ async function run() {
     const bannerCollection = client.db("Infofarjax").collection("bannerData");
     const reviewCollection = client.db("Infofarjax").collection("reviewData");
     const ImageCollection = client.db("Infofarjax").collection("Images");
+    const ApplicationFormCollection = client
+      .db("Infofarjax")
+      .collection("Application");
     const catagoriCollection = client
       .db("Infofarjax")
       .collection("catagoriData");
@@ -45,6 +48,10 @@ async function run() {
     app.get("/hero", async (req, res) => {
       const hero = await heroCollection.find().toArray();
       res.send(hero);
+    });
+    app.get("/application", async (req, res) => {
+      const result = await ApplicationFormCollection.find().toArray();
+      res.send(result);
     });
 
     app.get("/explore", async (req, res) => {
