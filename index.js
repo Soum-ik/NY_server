@@ -88,7 +88,7 @@ async function run() {
           from: "sarkarsoumik215@gmail.com",
           to: "ratulsarkar216@gmail.com",
           subject: "Reset Password Link",
-          text: `http://localhost:5173/reset_password/${user._id}`,
+          text: `https://farjaxiot.vercel.app/reset_password/${user._id}`,
         };
         console.log(mailOptions.text);
         await transporter.sendMail(mailOptions);
