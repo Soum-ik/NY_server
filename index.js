@@ -1,6 +1,7 @@
+const nodemailer = require("nodemailer");
 const express = require("express");
 const cors = require("cors");
-
+//
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
@@ -28,6 +29,7 @@ async function run() {
     const bannerCollection = client.db("Infofarjax").collection("bannerData");
     const reviewCollection = client.db("Infofarjax").collection("reviewData");
     const ImageCollection = client.db("Infofarjax").collection("Images");
+    const AdminCollection = client.db("Infofarjax").collection("Admin");
     const ApplicationFormCollection = client
       .db("Infofarjax")
       .collection("Application");
@@ -49,6 +51,71 @@ async function run() {
       const hero = await heroCollection.find().toArray();
       res.send(hero);
     });
+
+    // signup or password login system
+    app.get("/admin", async (req, res) => {
+      try {
+        const admin = await AdminCollection.findOne();
+
+        res.status(200).send(admin);
+      } catch (error) {
+        return res.status(404).send("Admin not found");
+      }
+    });
+
+    app.post("/forgot-password", async (req, res) => {
+      try {
+        const { email } = req.body;
+        const user = await AdminCollection.findOne({ email: email });
+        console.log(email, user);
+        if (!user) {
+          return res.send({ Status: "User not existed" });
+        }
+
+        // const token = jwt.sign({ id: user._id }, "jwt_secret_key", {
+        //   expiresIn: "1d",
+        // });
+
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "sarkarsoumik215@gmail.com",
+            pass: "unyn oiqq kavj awzj",
+          },
+        });
+
+        const mailOptions = {
+          from: "sarkarsoumik215@gmail.com",
+          to: "ratulsarkar216@gmail.com",
+          subject: "Reset Password Link",
+          text: `http://localhost:5173/reset_password/${user._id}`,
+        };
+        console.log(mailOptions.text);
+        await transporter.sendMail(mailOptions);
+        return res.send({ Status: "Success" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "Internal server error" });
+      }
+    });
+
+    app.put("/reset-password/:id", (req, res) => {
+      const { id } = req.params;
+      const { password } = req.body;
+      console.log(password, id);
+      try {
+        const res = AdminCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { password: password } }
+        );
+
+        console.log({ res });
+        res.send({ Status: "Success" });
+      } catch (error) {
+        res.send({ Status: error });
+      }
+    });
+
     app.get("/application", async (req, res) => {
       const result = await ApplicationFormCollection.find().toArray();
       res.send(result);
@@ -103,27 +170,18 @@ async function run() {
       res.send(image);
       // console.log(image);
     });
-    app.put("/images/:ID", async (req, res) => {
-      const ID = req.params.ID;
-      // const { image } = req.body;
-      console.log(ID, image);
 
-      try {
-        const result = await ImageCollection.updateOne(
-          {
-            _id: new ObjectId(ID),
-          },
-          {
-            $set: req.body,
-          }
-        );
-
-        console.log(result);
-        res.send({ result });
-      } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      }
+    app.put("/images/:id", async (req, res) => {
+      const id = req.params.id;
+      let result = ImageCollection.updateOne(
+        {
+          _id: new ObjectId(id),
+        },
+        {
+          $set: req.body,
+        }
+      );
+      res.send(result);
     });
 
     app.get("/choosepath/:id", async (req, res) => {
@@ -277,7 +335,7 @@ async function run() {
     app.post("/application/post", async (req, res) => {
       const request = req.body;
       const result = await ApplicationFormCollection.insertOne(request);
-      res.send({status: "succes", result});
+      res.send({ status: "succes", result });
     });
     // to create new catagoris
     app.post("/catagori", async (req, res) => {
