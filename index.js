@@ -130,6 +130,13 @@ async function run() {
       const choosepath = await choosepathCollection.find().toArray();
       res.send(choosepath);
     });
+    app.get("/choosepath/:id", async (req, res) => {
+      const id = req.params.id; // Correctly extract the "id" parameter
+      const choosepath = await choosepathCollection.findOne({
+        _id: new ObjectId(id),
+      }); // Query the database with the "id"
+      res.send(choosepath);
+    });
 
     app.get("/course/upcommingTime", async (req, res) => {
       const upCommingData = await upComeingCourseCollection.find().toArray();
