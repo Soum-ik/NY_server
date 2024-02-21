@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const express = require("express");
 const cors = require("cors");
-//
+const { isEqual } = require("lodash");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
@@ -178,17 +178,36 @@ async function run() {
       // console.log(image);
     });
 
+    const { ObjectId } = require("mongodb"); // Import ObjectId from mongodb
+
     app.put("/images/:id", async (req, res) => {
-      const id = req.params.id;
-      let result = ImageCollection.updateOne(
-        {
-          _id: new ObjectId(id),
-        },
-        {
-          $set: req.body,
+      try {
+        const id = req.params.id;
+        const post = req.body.post;
+
+        // Check if the post data is valid
+        if (!post) {
+          return res.status(400).json({ error: "Missing post data" });
         }
-      );
-      res.send(result);
+
+        // Update the image document in the database
+        const result = await ImageCollection.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $set: { image: post } },
+          { returnOriginal: false } // Ensure to return the updated document
+        );
+
+        // Check if the result is null (no document found)
+        if (!result) {
+          return res.status(404).json({ error: "Image not found" });
+        }
+
+        // Send the updated document in the response
+        res.json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+      }
     });
 
     app.get("/choosepath/:id", async (req, res) => {
